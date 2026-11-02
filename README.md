@@ -221,28 +221,6 @@ set PYTHONPATH=.
 pytest tests -v
 ```
 
----
-
-## Update this project on GitHub
-
-```bat
-cd C:\Projects\emotion-music-recommender
-git add .
-git status
-git commit -m "Describe your change"
-git push
-```
-
-Example:
-
-```bat
-git add README.md
-git commit -m "Update README with start_all.bat and full feature list"
-git push
-```
-
----
-
 ## Common Windows issues
 
 | Problem | Solution |
