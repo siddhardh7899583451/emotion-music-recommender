@@ -12,11 +12,11 @@ export default function HomePage() {
       <div className="card" style={{ marginBottom: '1.5rem', background: 'linear-gradient(135deg,#1a1530,#222244)' }}>
         <h2 style={{ marginBottom: '0.75rem' }}>How it works</h2>
         <ol style={{ color: 'var(--text-muted)', lineHeight: 1.8, paddingLeft: '1.25rem' }}>
-          <li>Capture your face with a webcam or upload an image</li>
-          <li>Record or upload a short voice clip</li>
-          <li>Type how you feel (or any text)</li>
-          <li>The system fuses available signals into one emotion</li>
-          <li>You receive curated songs matching that mood and language preference</li>
+          <li>Capture your face with a webcam or upload an image — music is recommended automatically</li>
+          <li>Record or upload a short voice clip — music is recommended automatically</li>
+          <li>Type how you feel (or any text) — music is recommended automatically</li>
+          <li>Or fuse face + voice + text on the Multimodal page for a combined emotion</li>
+          <li>Play songs in-app via YouTube / Spotify embeds; save favourites when logged in</li>
         </ol>
         <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
           All processing runs locally. No paid APIs required for core features.

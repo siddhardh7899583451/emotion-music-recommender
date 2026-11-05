@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     # App
     APP_NAME: str = "AI Multimodal Emotion Music Recommender"
-    APP_VERSION: str = "1.0.0"
+    APP_VERSION: str = "1.1.0"
     DEBUG: bool = True
     API_PREFIX: str = "/api/v1"
 

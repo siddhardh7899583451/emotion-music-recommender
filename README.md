@@ -1,10 +1,22 @@
 # AI-Based Multimodal Emotion Recognition and Personalized Music Recommendation System
 
-Detect emotion from **face**, **voice**, and **text**, fuse the results, and get **personalized music recommendations**.
+**Version 1.1.0**
+
+Detect emotion from **face**, **voice**, and **text**, then **automatically receive personalized music recommendations**.
 
 **Repository:** https://github.com/siddhardh7899583451/emotion-music-recommender
 
-Modern rebuild for **Windows 10/11**, CPU-only. Independent of the old Flask + TensorFlow 2.13 project.
+---
+
+## What’s new in 1.1.0
+
+| Fix / feature | Detail |
+|---------------|--------|
+| **Auto music after detection** | Text, Face, and Audio pages now call `/music/recommend` immediately after a successful emotion prediction and show song cards on the same page |
+| **Camera reliability** | Explicit `video.play()`, better permission / not-found errors, ready-state check before capture |
+| **Microphone reliability** | Preferred MediaRecorder MIME types, timeslice, minimum size check, clearer errors, correct `.webm` / `.ogg` extension for backend |
+| **Language filter on detect pages** | Choose English / Hindi / Telugu / Tamil / Kannada before or after detection |
+| **History on single-modality** | Optional history save after face / audio / text detection |
 
 ---
 
@@ -12,37 +24,25 @@ Modern rebuild for **Windows 10/11**, CPU-only. Independent of the old Flask + T
 
 | Module | Capability |
 |--------|------------|
-| **Facial emotion** | Webcam (snapshot + live ~2.5s), image upload, OpenCV + trained model, bounding boxes |
-| **Audio emotion** | Microphone or WAV/MP3/WebM upload, Librosa features + trained model |
-| **Text emotion** | Free-text lexicon scoring (English + emojis) |
-| **Multimodal fusion** | Confidence-weighted voting; works with 1, 2, or 3 modalities |
+| **Facial emotion** | Webcam (snapshot + live ~2.5s), image upload, OpenCV + trained model, bounding boxes → **auto music** |
+| **Audio emotion** | Microphone or WAV/MP3/WebM upload, Librosa features + trained model → **auto music** |
+| **Text emotion** | Free-text lexicon scoring (English + emojis) → **auto music** |
+| **Multimodal fusion** | Confidence-weighted combination of any available modalities → recommend |
 | **Music recommendations** | Emotion + language + energy matching (English, Hindi, Telugu, Tamil, Kannada, …) |
-| **Search** | Title / artist / mood / language search |
-| **In-app playback** | Official YouTube embed / Spotify embed |
-| **Favourites & playlists** | Save songs, create playlists, add from Search/Recommendations (login) |
-| **Like / dislike feedback** | Session-aware recommendation refinement |
-| **Auth & settings** | Register/login (JWT), modality weights, preferred language, dark/light theme |
-| **Analytics** | Emotion history in SQLite, distribution charts |
-| **API** | FastAPI with interactive docs at `/docs` |
-
-All three emotion modules work **independently** and together.
+| **In-app playback** | Official YouTube / Spotify embed |
+| **Favourites & playlists** | Save songs, create playlists (login required) |
+| **Like / dislike feedback** | Improves session recommendations |
+| **Auth & settings** | Register/login (JWT), modality weights, dark/light theme |
+| **Analytics** | Emotion history charts (SQLite) |
 
 ---
 
-## Technology stack
+## Tech stack
 
-- **Backend:** Python **3.12**, FastAPI, Uvicorn, SQLAlchemy 2, SQLite, Pydantic v2
-- **Frontend:** React 18, Vite 5, React Router, Recharts, Lucide icons
-- **ML:** OpenCV (headless), Librosa, NumPy, scikit-learn
-- **Models:** Bundled `ml/models/face/emotion_model.joblib` and `ml/models/audio/emotion_model.joblib`
-- **No Docker, no CUDA, no paid APIs** required for core features
-
-### Why FastAPI instead of Flask?
-
-- Native async support and high performance
-- Automatic OpenAPI docs (`/docs`)
-- First-class Pydantic validation
-- Clean modular routing
+- **Backend:** Python 3.12, FastAPI, SQLAlchemy, SQLite, OpenCV, Librosa, scikit-learn  
+- **Frontend:** React 18, Vite, React Router, Recharts  
+- **Models:** Bundled `ml/models/face/emotion_model.joblib` and `ml/models/audio/emotion_model.joblib`  
+- **No Docker / no CUDA required** for core use  
 
 ---
 
@@ -50,49 +50,13 @@ All three emotion modules work **independently** and together.
 
 | Software | Version |
 |----------|---------|
-| **Python** | **3.12** (required for reliable installs; avoid 3.13+) |
+| **Python** | **3.12** (recommended). Avoid 3.13+ for package wheels |
 | **Node.js** | 18+ (LTS or current) |
-| **Git** | Optional |
+| **Git** | Optional, for updates |
 
 ---
 
-## Project structure
-
-```text
-emotion-music-recommender/
-├── backend/
-│   ├── app/
-│   │   ├── api/           # auth, emotion, music, history, favourites, playlists, feedback, settings
-│   │   ├── core/          # config, security
-│   │   ├── database/      # SQLAlchemy models & session
-│   │   ├── schemas/
-│   │   ├── services/      # face / audio / text / fusion / music
-│   │   └── main.py
-│   ├── tests/
-│   ├── requirements.txt
-│   └── .env.example
-├── frontend/
-│   ├── src/pages/
-│   ├── src/components/    # SongCard, PlayerModal
-│   ├── src/context/       # Auth + theme
-│   └── package.json
-├── data/music_catalogue/songs.json
-├── ml/
-│   ├── models/face/       # emotion_model.joblib
-│   ├── models/audio/      # emotion_model.joblib
-│   └── training/          # train + prepare feature scripts
-├── scripts/
-│   ├── start_all.bat      # ★ single switch: backend + frontend
-│   ├── start_backend.bat
-│   ├── start_frontend.bat
-│   └── setup_windows.bat
-├── README.md
-└── START_HERE.md
-```
-
----
-
-## Windows installation
+## Quick start (Windows)
 
 ### 1. Clone
 
@@ -101,7 +65,9 @@ git clone https://github.com/siddhardh7899583451/emotion-music-recommender.git
 cd emotion-music-recommender
 ```
 
-### 2. Backend setup (Python 3.12)
+### 2. One-time setup
+
+**Backend (use Python 3.12):**
 
 ```bat
 cd backend
@@ -113,9 +79,7 @@ copy .env.example .env
 cd ..
 ```
 
-If `py -3.12` fails, install Python 3.12 from https://www.python.org and tick **Add to PATH**.
-
-### 3. Frontend setup
+**Frontend:**
 
 ```bat
 cd frontend
@@ -123,22 +87,17 @@ npm install
 cd ..
 ```
 
----
-
-## Start the application
-
-### Single switch (recommended)
+### 3. Start the app (single switch)
 
 ```bat
 scripts\start_all.bat
 ```
 
-Opens backend + frontend in two windows.
+- Backend → http://127.0.0.1:8000  
+- Frontend → http://localhost:5173  
+- **API docs:** http://127.0.0.1:8000/docs  
 
-- **App UI:** http://localhost:5173
-- **API docs:** http://127.0.0.1:8000/docs
-
-Stop: close those windows, or press `Ctrl+C` in each.
+To stop: close the two console windows, or press `Ctrl+C` in each.
 
 ### Manual start (two terminals)
 
@@ -159,56 +118,51 @@ npm run dev
 
 ---
 
-## Models
+## How the flow works (v1.1)
 
-Bundled trained classifiers (sklearn GradientBoosting pipelines):
+1. Open **Face**, **Audio**, or **Text** page.  
+2. Capture / record / type → **Detect**.  
+3. Emotion is shown **and** matching songs appear automatically below.  
+4. Optionally change language and click **Refresh recommendations**.  
+5. Or use **Multimodal** to fuse face + audio + text manually and recommend.  
 
-- `ml/models/face/emotion_model.joblib`
-- `ml/models/audio/emotion_model.joblib`
+---
 
-Loaded automatically at backend startup when present. Heuristics are used only as fallback.
+## Project structure
 
-### Retrain on your own FER / RAVDESS-style data
+```text
+emotion-music-recommender/
+├── backend/          # FastAPI app, APIs, services, tests
+├── frontend/         # React + Vite UI
+├── data/             # Music catalogue (songs.json)
+├── ml/
+│   ├── models/       # Trained face & audio joblib models
+│   └── training/     # Train / prepare feature scripts
+├── scripts/
+│   ├── start_all.bat      # Single switch: start backend + frontend
+│   ├── start_backend.bat
+│   ├── start_frontend.bat
+│   └── setup_windows.bat
+├── README.md
+└── START_HERE.md
+```
+
+---
+
+## Optional: retrain models on your data
 
 ```bat
 backend\venv\Scripts\activate
 
-:: 1) Arrange label folders: angry/, happy/, sad/, ...
-:: 2) Extract features
-python ml\training\prepare_features_from_images.py C:\data\fer_images
-python ml\training\prepare_features_from_audio.py C:\data\ravdess_wavs
+:: Arrange labeled folders: dataset/happy/*.jpg , dataset/sad/*.wav , etc.
+python ml\training\prepare_features_from_images.py C:\path\to\image_dataset
+python ml\training\prepare_features_from_audio.py C:\path\to\audio_dataset
 
-:: 3) Train
 python ml\training\train_face_model.py --from-csv ml\datasets\face_features.csv
 python ml\training\train_audio_model.py --from-csv ml\datasets\audio_features.csv
 ```
 
 Restart the backend after training.
-
----
-
-## API overview
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/api/v1/auth/register` | Create account |
-| POST | `/api/v1/auth/login` | Login → JWT |
-| GET | `/api/v1/auth/me` | Current user |
-| POST | `/api/v1/emotion/face` | Image → face emotions |
-| POST | `/api/v1/emotion/audio` | Audio → emotion |
-| POST | `/api/v1/emotion/text` | Text → emotion |
-| POST | `/api/v1/emotion/multimodal` | Fuse modalities |
-| POST | `/api/v1/music/recommend` | Emotion (+ language) → songs |
-| GET | `/api/v1/music/search` | Search catalogue |
-| GET | `/api/v1/music/filters` | Languages, genres, moods |
-| GET/POST | `/api/v1/favourites` | List / add favourites |
-| GET/POST | `/api/v1/playlists` | Playlists |
-| POST | `/api/v1/feedback` | Like / dislike |
-| GET/PUT | `/api/v1/settings` | User preferences |
-| POST/GET | `/api/v1/history` | Emotion history |
-| GET | `/api/v1/history/analytics` | Distribution stats |
-
-Full interactive docs: http://127.0.0.1:8000/docs
 
 ---
 
@@ -221,35 +175,53 @@ set PYTHONPATH=.
 pytest tests -v
 ```
 
-## Common Windows issues
+---
 
-| Problem | Solution |
-|---------|----------|
-| `numpy` build fails on 3.13 | Use **Python 3.12**: `py -3.12 -m venv venv` |
-| `python` not found | Reinstall Python with “Add to PATH”, or use `py -3.12` |
-| `npm` not found | Install Node.js LTS and open a **new** terminal |
-| Camera / mic blocked | Windows Settings → Privacy → allow for browser |
-| Port 8000 or 5173 in use | Close old server windows, or change ports |
-| `librosa` / `soundfile` install fails | Install [Visual C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) |
+## Update this project on GitHub
+
+After you change files:
+
+```bat
+cd C:\Projects\emotion-music-recommender
+git add .
+git status
+git commit -m "v1.1.0: auto-recommend after text/face/audio + camera/mic fixes"
+git push
+```
+
+Suggested commit message for this release:
+
+```bat
+git add frontend/src/pages/TextPage.jsx frontend/src/pages/FacePage.jsx frontend/src/pages/AudioPage.jsx README.md backend/app/core/config.py frontend/package.json
+git commit -m "v1.1.0: auto music recommendations after emotion detection; improve camera and microphone reliability"
+git push
+```
 
 ---
 
-## Privacy
+## Common issues
 
-- Camera and microphone are used only when you start them and can be stopped anytime.
-- Core processing is local.
-- Playback uses official YouTube / Spotify embeds.
-- Emotion history is stored in local SQLite when you save/fuse results.
+| Problem | Fix |
+|---------|-----|
+| `numpy` / pip build fails | Use **Python 3.12** venv: `py -3.12 -m venv venv` (not 3.13) |
+| `node` / `npm` not found | Install Node.js LTS and open a **new** terminal |
+| Camera / mic blocked | Windows Privacy → Camera / Microphone → allow for your browser; click Allow when the site prompts |
+| Camera black / no frame | Wait 1–2 s after “Start Webcam”, then Capture. Prefer Chrome/Edge. Use **localhost** (not a random IP) |
+| Mic recording empty | Speak 2–3+ seconds before Stop. Prefer Chrome. Or upload a WAV/MP3 |
+| Port in use | Close old backend/frontend windows, or change ports |
+| Models not loading | Ensure `ml\models\face\emotion_model.joblib` and `audio\...` exist |
+| Emotion detected but no songs | Catalogue is small (~40 tracks). Try language = **Any**, or another emotion (happy/sad/neutral) |
 
 ---
 
-## Disclaimer
+## Privacy & disclaimer
 
-Emotion labels are **predictions**, not clinical diagnoses.  
-Respect music platform terms and dataset licenses when retraining.
+- Camera and microphone are used only when you start them.  
+- Core processing is local; playback uses official YouTube/Spotify embeds.  
+- Emotion labels are **predictions**, not clinical diagnoses.
 
 ---
 
 ## License
 
-Educational / demonstration project, provided as-is for learning purposes.
+Educational / demonstration project. Respect third-party music platform terms and dataset licenses when retraining.
