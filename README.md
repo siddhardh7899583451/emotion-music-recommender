@@ -174,31 +174,7 @@ venv\Scripts\activate
 set PYTHONPATH=.
 pytest tests -v
 ```
-
 ---
-
-## Update this project on GitHub
-
-After you change files:
-
-```bat
-cd C:\Projects\emotion-music-recommender
-git add .
-git status
-git commit -m "v1.1.0: auto-recommend after text/face/audio + camera/mic fixes"
-git push
-```
-
-Suggested commit message for this release:
-
-```bat
-git add frontend/src/pages/TextPage.jsx frontend/src/pages/FacePage.jsx frontend/src/pages/AudioPage.jsx README.md backend/app/core/config.py frontend/package.json
-git commit -m "v1.1.0: auto music recommendations after emotion detection; improve camera and microphone reliability"
-git push
-```
-
----
-
 ## Common issues
 
 | Problem | Fix |
